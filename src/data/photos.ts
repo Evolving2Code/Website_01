@@ -13,7 +13,7 @@ export const photoSlots = {
   hero: { ratio: 4 / 5, shot: 'A steak on the grate over glowing alder coals, flames licking up. Tight, moody, lit by the fire.' },
   'hearth-wide': { ratio: 16 / 9, shot: 'The open kitchen from the dining room: the hearth, cooks working, warm light, dark surroundings.' },
   'dry-age': { ratio: 3 / 2, shot: 'Inside the dry-aging room: rows of bone-in loins on racks, cool light.' },
-  chef: { ratio: 4 / 5, shot: 'Portrait of the chef at the hearth, sleeves rolled, looking at the fire rather than the camera.' },
+  chef: { ratio: 4 / 5, shot: 'The chef finishing a plate at the pass with tweezers, the hearth glowing behind her.' },
   building: { ratio: 3 / 2, shot: 'The 1890s brick building from the street at dusk, windows lit.' },
 
   'cut-ribeye': { ratio: 4 / 5, shot: 'Bone-in ribeye, sliced, on a dark plate. Overhead or 45°.' },

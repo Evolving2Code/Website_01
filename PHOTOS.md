@@ -11,7 +11,7 @@ Save each photo in `src/assets/photos/`, named after its slot: for example `hero
 | `hero` | 4:5 portrait | Home, hero arch | A steak on the grate over glowing alder coals, flames licking up. Tight, moody, lit by the fire. |
 | `hearth-wide` | 16:9 landscape | Home, full-width band behind the chef quote | The open kitchen from the dining room: the hearth, cooks working, warm light, dark surroundings. |
 | `dry-age` | 3:2 landscape | Story, “The beef” (cropped 21:9) | Inside the dry-aging room: rows of bone-in loins on racks, cool light. |
-| `chef` | 4:5 portrait | Story, “The chef” arch | Portrait of the chef at the hearth, sleeves rolled, looking at the fire rather than the camera. |
+| `chef` | 4:5 portrait | Story, “The chef” arch | The chef finishing a plate at the pass with tweezers, the hearth glowing behind her. |
 | `building` | 3:2 landscape | Story timeline; Visit map cover (cropped 4:3) | The 1890s brick building from the street at dusk, windows lit. |
 | `cut-ribeye` | 4:5 portrait | Home cuts showcase (arch) | Bone-in ribeye, sliced, on a dark plate. Overhead or 45°. |
 | `cut-strip` | 4:5 portrait | Home cuts showcase (arch) | New York strip, sliced to show the crust and a medium-rare center. |

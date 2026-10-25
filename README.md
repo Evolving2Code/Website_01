@@ -60,4 +60,4 @@ The reservation and private-dining forms validate in the browser: required field
 
 ## Deploying
 
-`npm run build` produces static files in `dist/`. Vercel, Netlify and Cloudflare Pages all detect Astro automatically. Set `site` in `astro.config.mjs` to the real domain for canonical URLs.
+`npm run build` produces static files in `dist/`. Vercel, Netlify and Cloudflare Pages all detect Astro automatically. The site is served at https://alder-and-ash.designyum.com (set as `site` in `astro.config.mjs` for canonical URLs). A CNAME for `alder-and-ash` on designyum.com points to Vercel.
