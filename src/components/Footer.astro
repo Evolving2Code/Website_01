@@ -51,6 +51,11 @@ const year = new Date().getFullYear();
     </nav>
     <p class="small muted">© {year} {site.name}</p>
   </div>
+
+  <p class="wrap footer__concept small">
+    {site.name} is a fictional restaurant. A concept project by{' '}
+    <a href="https://designyum.com" rel="author">Designyum</a>.
+  </p>
 </footer>
 
 <style>
@@ -99,6 +104,18 @@ const year = new Date().getFullYear();
   }
   .footer__hours dt {
     color: var(--smoke);
+  }
+  .footer__concept {
+    margin-top: var(--space-s);
+    color: var(--smoke-dim);
+  }
+  .footer__concept a {
+    color: var(--smoke);
+    text-decoration: underline;
+    text-decoration-color: var(--line-strong);
+  }
+  .footer__concept a:hover {
+    color: var(--bone);
   }
   .footer__base {
     display: flex;
