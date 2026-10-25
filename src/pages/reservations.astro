@@ -1,0 +1,250 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+const times: { value: string; label: string }[] = [];
+for (let m = 17 * 60; m <= 21 * 60 + 30; m += 15) {
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  times.push({
+    value: `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`,
+    label: `${h - 12}:${String(min).padStart(2, '0')} pm`,
+  });
+}
+---
+
+<Base title="Reservations" description="Book a table at Alder & Ash in Pioneer Square, Seattle. Reservations open 60 days ahead.">
+  <header class="page-head wrap">
+    <h1 class="display" data-reveal>Book a table</h1>
+    <p class="lede muted" data-reveal>
+      Reservations open 60 days ahead. We’ll confirm by email within a few hours.
+    </p>
+  </header>
+
+  <div class="wrap res">
+    <aside class="res__aside">
+      <section>
+        <h2 class="h3">Good to know</h2>
+        <ul class="notes" role="list">
+          <li>We hold tables for 15 minutes. If you’re running late, call us at <a class="link" href={site.phoneHref}>{site.phone}</a>.</li>
+          <li>Please cancel at least 24 hours ahead. Late cancellations for parties of six or more are charged $50 a guest.</li>
+          <li>The bar and its eight counter seats are kept for walk-ins every night.</li>
+          <li>There’s no dress code. Most guests dress for a night out.</li>
+        </ul>
+      </section>
+      <section>
+        <h2 class="h3">Nine or more?</h2>
+        <p class="muted">
+          Larger groups dine in one of our private rooms. <a class="link" href="/private-dining/">Plan an event</a>
+        </p>
+      </section>
+    </aside>
+
+    <div class="res__panel">
+      <form class="form" data-validate data-res-form>
+        <div class="form-row">
+          <div class="field">
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" required data-label="A date" data-msg-required="Choose a date." aria-describedby="date-hint date-error" />
+            <span class="hint" id="date-hint">Closed Mondays</span>
+            <span class="error" id="date-error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="time">Time</label>
+            <select id="time" name="time" required data-msg-required="Choose a time." aria-describedby="time-error">
+              <option value="">Select a time</option>
+              {times.map((t) => <option value={t.value}>{t.label}</option>)}
+            </select>
+            <span class="error" id="time-error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="guests">Guests</label>
+            <select id="guests" name="guests" required data-msg-required="Choose how many guests." aria-describedby="guests-error">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => <option value={n} selected={n === 2}>{n} {n === 1 ? 'guest' : 'guests'}</option>)}
+              <option value="9+">9 or more</option>
+            </select>
+            <span class="error" id="guests-error" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="name">Full name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required data-label="Your name" aria-describedby="name-error" />
+            <span class="error" id="name-error" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required data-label="Your email" aria-describedby="email-error" />
+            <span class="error" id="email-error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              autocomplete="tel"
+              inputmode="tel"
+              required
+              pattern="[0-9\s\(\)\+\.\-]{10,}"
+              data-label="Your phone number"
+              data-msg-pattern="Enter a phone number with area code."
+              aria-describedby="phone-hint phone-error"
+            />
+            <span class="hint" id="phone-hint">Only used if we need to reach you about this booking</span>
+            <span class="error" id="phone-error" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="occasion">Occasion <span class="muted">(optional)</span></label>
+          <select id="occasion" name="occasion">
+            <option value="">None</option>
+            <option>Birthday</option>
+            <option>Anniversary</option>
+            <option>Date night</option>
+            <option>Business dinner</option>
+            <option>Celebration</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="notes">Allergies or requests <span class="muted">(optional)</span></label>
+          <textarea id="notes" name="notes" rows="3"></textarea>
+        </div>
+
+        <div>
+          <button type="submit" class="btn res__submit" data-busy="Requesting…">Request table</button>
+        </div>
+      </form>
+
+      <div class="success" data-success hidden>
+        <svg class="success__mark" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+          <path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <h2 class="h2" tabindex="-1">Table requested</h2>
+        <p class="muted">
+          <span data-echo="guests"></span> on <span data-echo="date"></span> at <span data-echo="time"></span>.
+          We’ll confirm by email at <span data-echo="email"></span> within a few hours.
+        </p>
+        <div class="actions">
+          <a class="btn btn--ghost" href="/menu/">See the menu</a>
+          <button type="button" class="btn btn--ghost" data-reset-form>Request another table</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { initForms } from '../scripts/forms';
+
+  const form = document.querySelector<HTMLFormElement>('[data-res-form]')!;
+  const date = form.querySelector<HTMLInputElement>('#date')!;
+  const guests = form.querySelector<HTMLSelectElement>('#guests')!;
+
+  const iso = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const today = new Date();
+  const max = new Date();
+  max.setDate(max.getDate() + 60);
+  date.min = iso(today);
+  date.max = iso(max);
+
+  initForms(() => {
+    date.setCustomValidity('');
+    if (date.value) {
+      const d = new Date(`${date.value}T12:00`);
+      if (date.value < date.min) date.setCustomValidity('Choose today or a later date.');
+      else if (date.value > date.max) date.setCustomValidity('We take reservations up to 60 days ahead.');
+      else if (d.getDay() === 1) date.setCustomValidity('We’re closed on Mondays. Choose another day.');
+    }
+    guests.setCustomValidity(
+      guests.value === '9+' ? 'For 9 or more guests, use our private dining form.' : '',
+    );
+  });
+
+  // Point larger parties to private dining straight away.
+  guests.addEventListener('change', () => guests.dispatchEvent(new Event('blur')));
+</script>
+
+<style>
+  .res {
+    display: grid;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+  @media (min-width: 60rem) {
+    .res {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+    .res__aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .res__aside {
+    display: grid;
+    gap: var(--space-l);
+  }
+  .res__aside h2 {
+    margin-bottom: var(--space-s);
+  }
+  .notes {
+    list-style: none;
+    padding: 0;
+    color: var(--smoke);
+  }
+  .notes li {
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .notes li:first-child {
+    border-top: 1px solid var(--line);
+  }
+  .res__panel {
+    padding: clamp(1.25rem, 4vw, 3rem);
+    background: var(--oak);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .res__submit {
+    min-width: 12rem;
+  }
+  .success {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    animation: success-in 0.7s var(--ease-out);
+  }
+  .success h2:focus {
+    outline: none;
+  }
+  .success__mark {
+    width: 3rem;
+    color: var(--brass);
+  }
+  .success__mark path {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: draw 0.6s 0.2s var(--ease-out) forwards;
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes success-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+</style>

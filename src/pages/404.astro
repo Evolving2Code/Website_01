@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found">
+  <section class="page-head wrap lost">
+    <h1 class="display">Gone to ash</h1>
+    <p class="lede muted">We couldn’t find that page. It may have moved, or the link may be wrong.</p>
+    <div class="actions">
+      <a href="/" class="btn">Back to the home page</a>
+      <a href="/menu/" class="btn btn--ghost">See the menu</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    min-height: 80svh;
+    display: grid;
+    align-content: center;
+    gap: var(--space-l);
+  }
+</style>

@@ -1,0 +1,211 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+
+const timeline = [
+  { year: '1889', text: 'The Great Seattle Fire burns 25 blocks of downtown, including every wooden building in what is now Pioneer Square.' },
+  { year: '1891', text: 'Our building goes up in brick and sandstone as a ship chandler’s warehouse, one of dozens rebuilt to the new fire code.' },
+  { year: '2017', text: 'Mara Ellison signs the lease on the empty ground floor and basement, and starts drawing a kitchen around a hearth.' },
+  { year: '2019', text: 'Alder & Ash opens with 70 seats, one fire and a basement aging room that holds 40 loins.' },
+  { year: '2023', text: 'We double the aging room and open the Library and the Cellar for private dinners.' },
+];
+---
+
+<Base title="Our story" description="How a chef and an 1891 brick warehouse in Pioneer Square became a wood-fired steakhouse.">
+  <header class="page-head wrap story-head">
+    <h1 class="display" data-reveal>Our story</h1>
+    <p class="lede muted" data-reveal>
+      A chef who grew up cooking over campfires on the Olympic Peninsula, and a brick warehouse built
+      the year after Seattle burned.
+    </p>
+  </header>
+
+  <section class="section chef" aria-labelledby="chef-title">
+    <div class="wrap chef__grid">
+      <div class="chef__photo arch" data-unveil>
+        <Photo name="chef" alt="Chef Mara Ellison at the hearth" sizes="(min-width: 60rem) 38vw, 90vw" />
+      </div>
+      <div class="chef__copy prose">
+        <h2 id="chef-title" class="h1" data-reveal>The chef</h2>
+        <p data-reveal>
+          Mara Ellison spent twelve years in steakhouses from Chicago to San Francisco, and in every
+          one the best thing on the plate was the crust. She came home to Seattle to cook the way her
+          family did at Lake Crescent every summer: over a wood fire, with nothing to hide behind.
+        </p>
+        <p data-reveal>
+          Alder was the obvious choice. It grows everywhere west of the Cascades, burns hot and
+          even, and gives beef a sweet, light smoke that doesn’t bury the flavor of the meat. The
+          Coast Salish peoples have smoked salmon over alder for generations, and to most people who
+          grew up here it’s simply the smell of the region.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section beef" aria-labelledby="beef-title">
+    <div class="wrap">
+      <div class="beef__photo" data-unveil>
+        <Photo name="dry-age" alt="Bone-in loins dry-aging on racks in the basement" sizes="(min-width: 82rem) 76rem, 100vw" ratio={21 / 9} />
+      </div>
+      <div class="beef__grid">
+        <h2 id="beef-title" class="h1" data-reveal>The beef</h2>
+        <div class="prose muted">
+          <p data-reveal>
+            We buy whole loins from three family ranches in the Kittitas Valley, the Palouse and the
+            Okanogan Highlands. The cattle graze on open range and finish on Washington grain, and we
+            know every rancher by name.
+          </p>
+          <p data-reveal>
+            Downstairs, the loins hang in a cold, humid room with Himalayan salt on the walls and a
+            fan that never stops. Over three to six weeks they lose a fifth of their weight and gain
+            a flavor that’s nutty, deep and a little like blue cheese. Our butcher cuts every steak to
+            order the afternoon you eat it.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section timeline-section" aria-labelledby="timeline-title">
+    <div class="wrap timeline__grid">
+      <div class="timeline__aside">
+        <h2 id="timeline-title" class="h1" data-reveal>The building</h2>
+        <div class="timeline__photo" data-unveil>
+          <Photo name="building" alt="The brick building on Occidental Avenue at dusk" sizes="(min-width: 60rem) 40vw, 100vw" />
+        </div>
+      </div>
+      <ol class="timeline" role="list">
+        {
+          timeline.map((t) => (
+            <li data-reveal>
+              <span class="timeline__year">{t.year}</span>
+              <p>{t.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section closing">
+    <div class="wrap closing__inner">
+      <p class="h2" data-reveal>Come see the fire for yourself.</p>
+      <div class="actions" data-reveal>
+        <a href="/reservations/" class="btn">Book a table</a>
+        <a href="/menu/" class="btn btn--ghost">See the menu</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .chef {
+    padding-top: 0;
+  }
+  .chef__grid {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .chef__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+  }
+  .chef__photo {
+    max-width: 28rem;
+    width: 100%;
+  }
+  .chef__copy h2 {
+    margin-bottom: var(--space-m);
+  }
+  .chef__copy p {
+    color: var(--smoke);
+  }
+
+  .beef {
+    background: var(--oak);
+  }
+  .beef__photo {
+    margin-bottom: var(--space-xl);
+  }
+  @media (max-width: 40rem) {
+    .beef__photo :global(.photo) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  .beef__grid {
+    display: grid;
+    gap: var(--space-m);
+  }
+  @media (min-width: 60rem) {
+    .beef__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+  }
+
+  .timeline__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  @media (min-width: 60rem) {
+    .timeline__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+    .timeline__aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+  .timeline__photo {
+    margin-top: var(--space-l);
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+    border-left: 1px solid var(--line-strong);
+  }
+  .timeline li {
+    position: relative;
+    padding: 0 0 var(--space-xl) var(--space-l);
+  }
+  .timeline li::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0.9rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 14px 2px rgb(224 119 58 / 0.6);
+  }
+  .timeline__year {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--brass-bright);
+    margin-bottom: var(--space-xs);
+  }
+  .timeline p {
+    color: var(--smoke);
+    max-width: 30rem;
+  }
+
+  .closing {
+    border-top: 1px solid var(--line);
+  }
+  .closing__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-l);
+    align-items: center;
+    justify-content: space-between;
+  }
+</style>

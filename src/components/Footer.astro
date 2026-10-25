@@ -1,0 +1,125 @@
+---
+import Logo from './Logo.astro';
+import { site, nav } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <Logo />
+      <p class="muted">{site.tagline}.</p>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Find us</h2>
+      <address>
+        {site.address.street}<br />
+        {site.address.city}, {site.address.region} {site.address.postal}
+      </address>
+      <p><a class="link" href={site.mapsUrl} target="_blank" rel="noopener">Get directions</a></p>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Hours</h2>
+      <dl class="footer__hours">
+        {
+          site.hours.map((h) => (
+            <div>
+              <dt>{h.days}</dt>
+              <dd>{h.time}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Contact</h2>
+      <p><a href={site.phoneHref}>{site.phone}</a></p>
+      <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+      <p><a href={site.instagram} target="_blank" rel="noopener">Instagram</a></p>
+    </div>
+  </div>
+
+  <div class="wrap footer__base">
+    <nav aria-label="Footer">
+      <ul>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="/reservations/">Reservations</a></li>
+      </ul>
+    </nav>
+    <p class="small muted">© {year} {site.name}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: var(--space-xl) var(--space-l);
+    background: #110e0b;
+    font-size: 0.95rem;
+  }
+  .footer__grid {
+    display: grid;
+    gap: var(--space-l);
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+  .footer__brand {
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+  }
+  .footer__h {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--brass);
+    margin-bottom: var(--space-xs);
+    letter-spacing: 0.02em;
+  }
+  address {
+    font-style: normal;
+    margin-bottom: var(--space-2xs);
+  }
+  .footer a {
+    text-decoration: none;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }
+  .footer p + p {
+    margin-top: 0.25rem;
+  }
+  .footer__hours div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-block: 0.15rem;
+  }
+  .footer__hours dt {
+    color: var(--smoke);
+  }
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--line);
+  }
+  .footer__base ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    list-style: none;
+    padding: 0;
+  }
+  .footer__base a {
+    display: inline-block;
+    padding-block: 0.5rem;
+    color: var(--smoke);
+  }
+</style>

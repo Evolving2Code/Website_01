@@ -1,0 +1,244 @@
+---
+import Base from '../layouts/Base.astro';
+import { menus } from '../data/menu';
+---
+
+<Base title="Menu" description="Dinner, wine and cocktails at Alder & Ash: dry-aged Washington steaks cooked over alder, a raw bar, sides and a 600-bottle cellar.">
+  <header class="page-head wrap">
+    <h1 class="display" data-reveal>Menu</h1>
+    <p class="lede muted" data-reveal>
+      It changes with the seasons and with whatever is ready in the aging room.
+    </p>
+  </header>
+
+  <div class="wrap menu" data-tabs>
+    <div class="tabs" role="tablist" aria-label="Menus" data-tablist hidden>
+      {
+        menus.map((m, i) => (
+          <button
+            class="tab"
+            type="button"
+            role="tab"
+            id={`tab-${m.id}`}
+            aria-controls={m.id}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            {m.label}
+          </button>
+        ))
+      }
+      <span class="tabs__ink" aria-hidden="true" data-ink></span>
+    </div>
+
+    {
+      menus.map((m) => (
+        <section class="panel" id={m.id} role="tabpanel" aria-labelledby={`tab-${m.id}`} data-panel>
+          <h2 class="visually-hidden">{m.label}</h2>
+          <p class="panel__intro muted">{m.intro}</p>
+          <div class="panel__grid">
+            {m.sections.map((s) => (
+              <section class="course">
+                <h3 class="h2 course__title">{s.title}</h3>
+                {s.note && <p class="course__note">{s.note}</p>}
+                <ul class="items" role="list">
+                  {s.items.map((item) => (
+                    <li class="item">
+                      <span class="item__name">{item.name}</span>
+                      <span class="item__price">{item.price}</span>
+                      {item.detail && <span class="item__detail">{item.detail}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <aside class="menu__foot">
+      <p class="muted">
+        Tell your server about any allergies; most dishes can be adjusted. Consuming raw or
+        undercooked meats, seafood or eggs may increase your risk of foodborne illness.
+      </p>
+      <div class="actions">
+        <a href="/reservations/" class="btn">Book a table</a>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<script>
+  // Accessible tabs. Without JavaScript both menus simply show one after the other.
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const list = root.querySelector<HTMLElement>('[data-tablist]')!;
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    const ink = root.querySelector<HTMLElement>('[data-ink]')!;
+    list.hidden = false;
+
+    const moveInk = (tab: HTMLElement) => {
+      ink.style.width = `${tab.offsetWidth}px`;
+      ink.style.transform = `translateX(${tab.offsetLeft}px)`;
+    };
+
+    const select = (i: number, focus = false, updateHash = true) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+      });
+      panels.forEach((p, j) => {
+        p.hidden = i !== j;
+        p.classList.toggle('is-in', i === j);
+      });
+      moveInk(tabs[i]);
+      if (focus) tabs[i].focus();
+      if (updateHash) history.replaceState(null, '', `#${panels[i].id}`);
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      tab.addEventListener('keydown', (e) => {
+        const last = tabs.length - 1;
+        const next =
+          e.key === 'ArrowRight' ? (i === last ? 0 : i + 1)
+          : e.key === 'ArrowLeft' ? (i === 0 ? last : i - 1)
+          : e.key === 'Home' ? 0
+          : e.key === 'End' ? last
+          : -1;
+        if (next < 0) return;
+        e.preventDefault();
+        select(next, true);
+      });
+    });
+
+    const fromHash = panels.findIndex((p) => `#${p.id}` === location.hash);
+    select(Math.max(0, fromHash), false, false);
+    new ResizeObserver(() => moveInk(tabs.find((t) => t.ariaSelected === 'true') ?? tabs[0])).observe(list);
+  });
+</script>
+
+<style>
+  .page-head .display {
+    font-size: clamp(4rem, 2.5rem + 8vw, 9rem);
+  }
+  .tabs {
+    position: relative;
+    display: flex;
+    gap: var(--space-l);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--space-xl);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab {
+    flex: none;
+    min-height: 3rem;
+    padding: 0.5rem 0 0.85rem;
+    border: 0;
+    background: none;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--smoke-dim);
+    transition: color 0.3s var(--ease-out);
+  }
+  .tab:hover,
+  .tab[aria-selected='true'] {
+    color: var(--bone);
+  }
+  .tab[aria-selected='true'] {
+    font-style: italic;
+  }
+  .tabs__ink {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+    width: 0;
+    background: var(--brass);
+    transition:
+      transform 0.5s var(--ease-out),
+      width 0.5s var(--ease-out);
+  }
+
+  .panel + .panel {
+    margin-top: var(--space-2xl);
+  }
+  [data-tablist]:not([hidden]) ~ .panel + .panel {
+    margin-top: 0;
+  }
+  .panel:global(.is-in) {
+    animation: panel-in 0.6s var(--ease-out);
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .panel__intro {
+    max-width: 38rem;
+    font-size: var(--step-1);
+    margin-bottom: var(--space-xl);
+  }
+  .panel__grid {
+    columns: 1;
+    column-gap: clamp(3rem, 7vw, 7rem);
+  }
+  @media (min-width: 56rem) {
+    .panel__grid {
+      columns: 2;
+    }
+  }
+  .course {
+    break-inside: avoid;
+    padding-bottom: var(--space-xl);
+  }
+  .course__title {
+    margin-bottom: var(--space-s);
+    color: var(--brass-bright);
+    font-style: italic;
+  }
+  .course__note {
+    color: var(--smoke);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-s);
+    max-width: 30rem;
+  }
+  .items {
+    list-style: none;
+    padding: 0;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem var(--space-s);
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .item__name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .item__price {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--brass);
+    white-space: nowrap;
+  }
+  .item__detail {
+    grid-column: 1 / -1;
+    color: var(--smoke);
+    font-size: 0.95rem;
+  }
+  .menu__foot {
+    display: grid;
+    gap: var(--space-m);
+    max-width: 38rem;
+    padding-block: var(--space-l) var(--space-2xl);
+    font-size: var(--step--1);
+  }
+</style>

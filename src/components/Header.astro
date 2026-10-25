@@ -1,0 +1,284 @@
+---
+import Logo from './Logo.astro';
+import { nav } from '../data/site';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="header" data-header>
+  <div class="header__inner wrap">
+    <a href="/" class="header__logo" aria-label="Alder & Ash, home">
+      <Logo />
+    </a>
+
+    <nav class="header__nav" aria-label="Main">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header__end">
+      <a href="/reservations/" class="btn header__book">Book a table</a>
+      <button
+        class="header__toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="visually-hidden" data-menu-label>Open menu</span>
+        <span class="header__bars" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" data-menu hidden>
+  <nav aria-label="Main (mobile)">
+    <ul>
+      <li><a href="/" aria-current={path === '/' ? 'page' : undefined}>Home</a></li>
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li><a href="/reservations/">Reservations</a></li>
+    </ul>
+  </nav>
+</div>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const label = header.querySelector<HTMLElement>('[data-menu-label]')!;
+  const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Solid background once the page scrolls past the top
+  const sentinel = document.createElement('div');
+  sentinel.style.cssText = 'position:absolute;top:0;height:40px;width:1px;pointer-events:none';
+  document.body.prepend(sentinel);
+  new IntersectionObserver(([entry]) => {
+    header.classList.toggle('is-scrolled', !entry.isIntersecting);
+  }).observe(sentinel);
+
+  let closeTimer: number | undefined;
+  const setOpen = (open: boolean) => {
+    window.clearTimeout(closeTimer);
+    toggle.setAttribute('aria-expanded', String(open));
+    label.textContent = open ? 'Close menu' : 'Open menu';
+    document.documentElement.classList.toggle('menu-open', open);
+    // Keep keyboard focus inside the menu while it covers the page
+    document.querySelectorAll('main, footer').forEach((el) => ((el as HTMLElement).inert = open));
+    if (open) {
+      menu.hidden = false;
+      requestAnimationFrame(() => menu.classList.add('is-open'));
+      menu.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
+    } else {
+      menu.classList.remove('is-open');
+      closeTimer = window.setTimeout(() => (menu.hidden = true), reduce.matches ? 0 : 350);
+    }
+  };
+
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  window.matchMedia('(min-width: 60rem)').addEventListener('change', (e) => e.matches && setOpen(false));
+</script>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--header-h);
+    transition:
+      background-color 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out),
+      backdrop-filter 0.4s var(--ease-out);
+    border-bottom: 1px solid transparent;
+    view-transition-name: site-header;
+  }
+  .header:global(.is-scrolled),
+  :global(.menu-open) .header {
+    background: rgb(21 17 14 / 0.86);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom-color: var(--line);
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    height: 100%;
+  }
+  .header__logo {
+    text-decoration: none;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+  .header__nav {
+    display: none;
+  }
+  .header__nav ul {
+    display: flex;
+    gap: clamp(1rem, 2vw, 2.25rem);
+    list-style: none;
+    padding: 0;
+  }
+  .header__nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.5rem;
+    font-size: 0.95rem;
+    text-decoration: none;
+    color: var(--smoke);
+    transition: color 0.2s var(--ease-out);
+  }
+  .header__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2rem;
+    height: 1px;
+    background: var(--brass);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .header__nav a:hover,
+  .header__nav a[aria-current='page'] {
+    color: var(--bone);
+  }
+  .header__nav a:hover::after,
+  .header__nav a[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .header__end {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+  .header__book {
+    min-height: 2.75rem;
+    padding-inline: 1.2rem;
+  }
+  .header__toggle {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+  }
+  .header__bars {
+    display: grid;
+    gap: 6px;
+    width: 18px;
+  }
+  .header__bars span {
+    display: block;
+    height: 1.5px;
+    background: var(--bone);
+    transition: transform 0.35s var(--ease-out);
+  }
+  [aria-expanded='true'] .header__bars span:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+  [aria-expanded='true'] .header__bars span:last-child {
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+
+  @media (max-width: 26rem) {
+    .header__book {
+      padding-inline: 0.9rem;
+      font-size: 0.875rem;
+    }
+    .header :global(.logo__word) {
+      font-size: 1.3rem;
+    }
+  }
+  @media (min-width: 60rem) {
+    .header__nav {
+      display: block;
+    }
+    .header__toggle {
+      display: none;
+    }
+  }
+
+  .mobile-menu {
+    position: fixed;
+    z-index: 49;
+    inset: var(--header-h) 0 0;
+    background: var(--soot);
+    padding: var(--space-xl) var(--gutter);
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out);
+  }
+  .mobile-menu:global(.is-open) {
+    opacity: 1;
+  }
+  .mobile-menu ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+  .mobile-menu li {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 0.5s var(--ease-out);
+  }
+  .mobile-menu:global(.is-open) li {
+    opacity: 1;
+    transform: none;
+  }
+  .mobile-menu li:nth-child(2) { transition-delay: 0.04s; }
+  .mobile-menu li:nth-child(3) { transition-delay: 0.08s; }
+  .mobile-menu li:nth-child(4) { transition-delay: 0.12s; }
+  .mobile-menu li:nth-child(5) { transition-delay: 0.16s; }
+  .mobile-menu li:nth-child(6) { transition-delay: 0.2s; }
+  .mobile-menu li:nth-child(7) { transition-delay: 0.24s; }
+  .mobile-menu a {
+    display: block;
+    padding-block: 0.35rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 9vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    text-decoration: none;
+  }
+  .mobile-menu a[aria-current='page'] {
+    font-style: italic;
+    color: var(--brass-bright);
+  }
+  :global(html.menu-open) {
+    overflow: hidden;
+  }
+</style>
