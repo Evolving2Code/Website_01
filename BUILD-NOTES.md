@@ -15,7 +15,7 @@ The video inspired the approach: use Claude Code with design skills installed to
 | **Claude Code** (cloud session at claude.ai/code) | Planning, design, all code, screenshots, git, deployment |
 | **Claude Code skills** (see below) | Design direction and the design system |
 | **Google Flow** | Generating all 25 photos |
-| **GitHub** (`Evolving2Code/Website_01`) | Code, pull requests |
+| **GitHub** (`Evolving2Code/alder-and-ash` (originally named `Website_01`)) | Code, pull requests |
 | **Vercel** (Hobby plan, free) | Hosting, preview builds for every pull request |
 | **Namecheap** | DNS for designyum.com |
 
