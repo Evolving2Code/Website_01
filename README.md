@@ -1,63 +1,109 @@
 # Alder & Ash
 
-Marketing site for **Alder & Ash**, a fictional wood-fired steakhouse in Pioneer Square, Seattle. It's built with [Astro](https://astro.build) and [GSAP](https://gsap.com) and outputs a fully static site that runs on any static host.
+**A website concept for a wood-fired steakhouse in Seattle, designed and built by [Designyum](https://designyum.com).**
 
-## Commands
+### [View the live site →](https://alder-and-ash.designyum.com)
 
-| Command           | What it does                                     |
-| ----------------- | ------------------------------------------------ |
-| `npm install`     | Install dependencies (Node 20+)                  |
-| `npm run dev`     | Start a dev server at http://localhost:4321      |
-| `npm run build`   | Type-check, then build the site into `dist/`     |
-| `npm run preview` | Serve the built site locally                     |
+![The Alder & Ash home page: a large serif headline reading "Steak over alder" beside an arched photo of a ribeye over glowing coals](docs/screenshots/home-desktop.webp)
 
-## Pages
+Alder & Ash is a fictional restaurant: a steakhouse in an 1890s brick building in Pioneer Square that cooks Washington beef over an open alder fire. The site was designed to feel like walking in from the rain: dark, warm and lit by the hearth.
 
-| Path               | Contents                                                              |
-| ------------------ | --------------------------------------------------------------------- |
-| `/`                | Hero, intro, signature cuts, chef quote, press, private dining, visit |
-| `/menu/`           | Dinner and wine & cocktails, as tabs (`/menu/#drinks` deep-links)     |
-| `/story/`          | Chef, sourcing and dry-aging, building timeline                       |
-| `/private-dining/` | Rooms with capacities and minimums, event inquiry form                |
-| `/gallery/`        | Photo grid with a keyboard- and swipe-friendly lightbox, press, awards |
-| `/visit/`          | Hours, address, parking, transit, accessibility, click-to-load map    |
-| `/reservations/`   | Booking request form                                                  |
+**Want a site like this for your restaurant?** [Get in touch with Designyum](https://designyum.com). Every build is adapted to your name, menu, photography and booking system.
 
-## Editing content
+---
+
+## What's inside
+
+- **Seven pages:** home, menu, story, private dining, gallery, visit and reservations.
+- **A signature-cuts showcase:** choosing a steak swaps the arched photo and its tasting note.
+- **Menus that are easy to update:** dinner and drinks as tabs, with every dish and price kept in one data file.
+- **Reservation and private-event forms** with clear, friendly validation: closed days, booking windows, and large parties steered to private dining.
+- **A photo gallery** with a full-screen viewer that works with a keyboard and with a swipe on phones.
+
+![The signature cuts section: an arched photo of a sliced ribeye beside a list of five steaks with weights, aging and prices](docs/screenshots/signature-cuts.webp)
+
+## Built for every screen
+
+The layout is designed for phones first and scales up to large desktops. Phone visitors get the full experience, not a cut-down version.
+
+![Three phone screens: the home page, the chef's story and the dinner menu](docs/screenshots/mobile.webp)
+
+![The dinner menu on desktop, with tabs for dinner and wine & cocktails](docs/screenshots/menu.webp)
+
+## Motion that feels like firelight
+
+- On arrival, the headline rises line by line, the hero photo opens upward like the mouth of a hearth, and embers drift up the screen.
+- Photos unveil through their arched frames as you scroll, and the kitchen photo drifts gently behind the chef's quote.
+- Pages crossfade into each other as you move around the site.
+- Visitors who prefer reduced motion get the finished page with no animation, and every page still works with JavaScript turned off.
+
+![The gallery: a grid of moody restaurant photography, including cocktails, a shellfish tower, sides and a torched baked Alaska](docs/screenshots/gallery.webp)
+
+## Fast on any connection
+
+- **Photos** are served as modern formats (AVIF and WebP) at the right size for each screen, and load only as they scroll into view.
+- **Fonts** are hosted with the site, with no third-party requests.
+- **Script** is light: about 45 KB, loaded after the page appears. The ember effect scales to the device and pauses when it's off screen.
+- **Search engines** get structured restaurant data: hours, address and cuisine.
+
+## Design
+
+| | |
+|---|---|
+| **Palette** | Soot `#15110e`, charred oak `#201914`, bone `#ede4d6`, smoke `#b2a593`, brass `#c9a46a`, ember `#e0773a` |
+| **Type** | Cormorant Garamond for display, Hanken Grotesk for text |
+| **Signature shape** | The hearth arch: a tall frame with a fully rounded top, used on key photos |
+| **Photography** | Art-directed and generated for this concept; prompts are in [IMAGE-PROMPTS.md](IMAGE-PROMPTS.md) |
+
+**Built with** [Astro](https://astro.build) and [GSAP](https://gsap.com), deployed on [Vercel](https://vercel.com).
+
+---
+
+## For developers
+
+<details>
+<summary>Running, editing and deploying the site</summary>
+
+### Commands
+
+| Command           | What it does                                 |
+| ----------------- | -------------------------------------------- |
+| `npm install`     | Install dependencies (Node 20+)              |
+| `npm run dev`     | Start a dev server at http://localhost:4321  |
+| `npm run build`   | Type-check, then build the site into `dist/` |
+| `npm run preview` | Serve the built site locally                 |
+
+The first build takes a few minutes while it generates optimized versions of every photo.
+
+### Editing content
 
 All content is plain data, so a copy change never touches the layout code.
 
 - `src/data/site.ts`: name, address, phone, emails, hours, parking and transit notes, nav links
-- `src/data/menu.ts`: every menu section, dish and price, plus the five featured cuts on the home page
-- `src/data/press.ts`: press quotes and awards (**the current ones are placeholders with invented outlets**)
-- `src/data/photos.ts`: the photo slots (see below)
+- `src/data/menu.ts`: every menu section, dish and price, plus the five featured cuts
+- `src/data/press.ts`: press quotes and awards (placeholders with invented outlets)
+- `src/data/photos.ts`: the photo slots
 
-The street address and coordinates in `site.ts` are placeholders. The 555 phone number and the `.example` emails are deliberately fake.
+The address, coordinates, 555 phone number and `.example` emails are deliberately fake.
 
-## Photos
+### Photos
 
-Every image on the site is a named slot. Save a file named after a slot, such as `src/assets/photos/hero.jpg`, and the next build crops it to the slot's ratio and serves it as AVIF/WebP at several widths. Until then the slot shows a labeled placeholder. **[PHOTOS.md](PHOTOS.md)** has the full shot list with ratios and where each photo appears.
+Every image is a named slot. Save a file named after a slot, such as `src/assets/photos/hero.jpg`, and the build crops it to the slot's ratio and serves it as AVIF/WebP at several widths. Empty slots show a labeled placeholder, and the gallery lists only slots that have a photo. [PHOTOS.md](PHOTOS.md) is the shot list.
 
-## Forms
+### Forms
 
-The reservation and private-dining forms validate in the browser: required fields, email and phone format, Mondays closed, the 60-day booking window, and parties of 9 or more redirected to private dining. On a valid submit they show a confirmation, but **they don't send data anywhere yet**. To connect them, replace the `submit()` function in `src/scripts/forms.ts` with a call to your booking service (OpenTable, Resy, SevenRooms) or a form endpoint (Formspree, Supabase, a serverless function).
+The reservation and private-dining forms validate in the browser and show a confirmation, but don't send data anywhere yet. To connect them, replace `submit()` in `src/scripts/forms.ts` with a call to a booking service (OpenTable, Resy, SevenRooms) or a form endpoint (Formspree, Supabase, a serverless function).
 
-## Motion and performance
+### Design tokens
 
-- **One orchestrated moment:** on load, the hero headline rises line by line, the arch opens upward like a hearth, and embers drift up from the bottom of the screen. The embers are drawn on a canvas, with a particle count scaled to screen size and CPU cores, and the loop pauses when off-screen or when the tab is hidden.
-- **Scroll:** arched photos unveil as they enter the viewport, section text settles in, and the hearth band has a light parallax.
-- **Interaction:** the signature-cut list swaps the arch photo on hover, focus or tap. The menu tabs, mobile menu and lightbox each have their own transitions.
-- **Page changes** crossfade using native cross-document View Transitions, with no JavaScript, in browsers that support them.
-- **Reduced motion:** with `prefers-reduced-motion` on, all of the above is skipped and content renders in its final state. With JavaScript off, every page is still complete and readable.
-- **Weight:** fonts are self-hosted variable fonts, two of them preloaded, with no third-party requests. The only JavaScript is about 45 KB gzipped of GSAP and ScrollTrigger plus small page scripts, all deferred. The map only loads when a visitor asks for it.
+Colors, type scale, spacing and easing are CSS variables at the top of `src/styles/global.css`.
 
-## Design
+### Deploying
 
-- **Palette:** soot `#15110e`, charred oak `#201914`, bone `#ede4d6`, smoke `#b2a593`, brass `#c9a46a`, and ember `#e0773a` (used only for firelight).
-- **Type:** Cormorant Garamond for display, Hanken Grotesk for body text.
-- **Signature shape:** the hearth arch, a tall frame with a fully rounded top used on key photos.
-- Tokens live at the top of `src/styles/global.css`.
+`npm run build` produces static files in `dist/`, which run on any static host. This site is deployed on Vercel at https://alder-and-ash.designyum.com, set as `site` in `astro.config.mjs` for canonical URLs.
 
-## Deploying
+</details>
 
-`npm run build` produces static files in `dist/`. Vercel, Netlify and Cloudflare Pages all detect Astro automatically. The site is served at https://alder-and-ash.designyum.com (set as `site` in `astro.config.mjs` for canonical URLs). A CNAME for `alder-and-ash` on designyum.com points to Vercel.
+## License
+
+© Designyum. All rights reserved. This repository is public as a portfolio piece: you're welcome to look around, but the design, code and photography may not be reused without permission. [Get in touch](https://designyum.com) about licensing a site like this.
