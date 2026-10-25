@@ -2,9 +2,10 @@
 import Base from '../layouts/Base.astro';
 import Photo from '../components/Photo.astro';
 import type { PhotoName } from '../data/photos';
+import { hasPhoto } from '../data/photo-files';
 import { press, awards } from '../data/press';
 
-const shots: { name: PhotoName; alt: string }[] = [
+const allShots: { name: PhotoName; alt: string }[] = [
   { name: 'gallery-01', alt: 'A bartender pouring a stirred cocktail' },
   { name: 'gallery-02', alt: 'A shellfish tower on crushed ice' },
   { name: 'gallery-03', alt: 'A steak being carved at the table' },
@@ -18,6 +19,11 @@ const shots: { name: PhotoName; alt: string }[] = [
   { name: 'gallery-11', alt: 'The restaurant’s windows glowing on a Pioneer Square street at night' },
   { name: 'gallery-12', alt: 'Embers in the hearth, close up' },
 ];
+
+// Show only the shots that have a photo, so the grid never has empty slots.
+// Before any photos exist, show them all as placeholders.
+const filled = allShots.filter((s) => hasPhoto(s.name));
+const shots = filled.length ? filled : allShots;
 ---
 
 <Base title="Gallery and press" description="Photos from the dining room, bar and kitchen at Alder & Ash, plus press and awards.">
