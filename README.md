@@ -61,6 +61,8 @@ The layout is designed for phones first and scales up to large desktops. Phone v
 
 ## For developers
 
+How this site was planned, designed, photographed and deployed, including the tools and Claude Code skills used, is written up in [BUILD-NOTES.md](BUILD-NOTES.md).
+
 <details>
 <summary>Running, editing and deploying the site</summary>
 
