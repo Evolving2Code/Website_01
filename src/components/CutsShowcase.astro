@@ -1,0 +1,200 @@
+---
+// The signature cuts: a list on one side, one arched photo on the other.
+// Choosing a cut (hover, focus or tap) swaps the photo and its note.
+import Photo from './Photo.astro';
+import { cuts } from '../data/menu';
+---
+
+<div class="cuts" data-cuts>
+  <div class="cuts__stage" aria-live="polite">
+    <div class="cuts__frame arch" data-unveil>
+      {
+        cuts.map((cut, i) => (
+          <div class="cuts__slide" data-slide={i} aria-hidden={i !== 0 ? 'true' : undefined}>
+            <Photo name={cut.photo} alt={cut.name} sizes="(min-width: 60rem) 36vw, 90vw" />
+          </div>
+        ))
+      }
+    </div>
+    <p class="cuts__note" data-note>{cuts[0].note}</p>
+  </div>
+
+  <ul class="cuts__list" role="list">
+    {
+      cuts.map((cut, i) => (
+        <li>
+          <button
+            type="button"
+            class="cuts__row"
+            data-cut={i}
+            data-note-text={cut.note}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+          >
+            <span class="cuts__name">{cut.name}</span>
+            <span class="cuts__price">{cut.price}</span>
+            <span class="cuts__meta">
+              {cut.weight}, aged {cut.age}, {cut.origin}
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cuts]').forEach((root) => {
+    const rows = [...root.querySelectorAll<HTMLButtonElement>('[data-cut]')];
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const note = root.querySelector<HTMLElement>('[data-note]')!;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+    let current = 0;
+
+    const show = (i: number) => {
+      if (i === current) return;
+      current = i;
+      rows.forEach((r, j) => r.setAttribute('aria-pressed', String(j === i)));
+      slides.forEach((s, j) => {
+        s.classList.toggle('is-active', j === i);
+        if (j === i) s.removeAttribute('aria-hidden');
+        else s.setAttribute('aria-hidden', 'true');
+      });
+      note.classList.remove('is-in');
+      void note.offsetWidth;
+      note.textContent = rows[i].dataset.noteText ?? '';
+      note.classList.add('is-in');
+    };
+
+    slides[0]?.classList.add('is-active');
+    rows.forEach((row, i) => {
+      row.addEventListener('click', () => show(i));
+      row.addEventListener('focus', () => show(i));
+      row.addEventListener('pointerenter', () => fine.matches && show(i));
+    });
+  });
+</script>
+
+<style>
+  .cuts {
+    display: grid;
+    gap: var(--space-l);
+  }
+  @media (min-width: 60rem) {
+    .cuts {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+    .cuts__stage {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .cuts__stage {
+    max-width: 30rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .cuts__frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: var(--oak);
+  }
+  .cuts__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 0.7s var(--ease-out),
+      transform 1.2s var(--ease-out);
+  }
+  .cuts__slide:global(.is-active) {
+    opacity: 1;
+    transform: none;
+  }
+  .cuts__slide :global(.photo) {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  .cuts__note {
+    margin-top: var(--space-m);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    color: var(--smoke);
+    min-height: 3lh;
+  }
+  .cuts__note:global(.is-in) {
+    animation: note-in 0.6s var(--ease-out);
+  }
+  @keyframes note-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  .cuts__list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .cuts__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.3rem var(--space-s);
+    width: 100%;
+    padding: var(--space-m) 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: none;
+    text-align: left;
+    color: var(--smoke);
+    transition: color 0.35s var(--ease-out);
+  }
+  .cuts__row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--brass);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .cuts__row[aria-pressed='true'] {
+    color: var(--bone);
+  }
+  .cuts__row[aria-pressed='true']::before {
+    transform: scaleX(1);
+  }
+  .cuts__name {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 400;
+    line-height: 1.05;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .cuts__row[aria-pressed='true'] .cuts__name {
+    font-style: italic;
+  }
+  .cuts__price {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--brass);
+    align-self: baseline;
+  }
+  .cuts__meta {
+    grid-column: 1 / -1;
+    font-size: 0.95rem;
+    color: var(--smoke-dim);
+  }
+  .cuts__row[aria-pressed='true'] .cuts__meta {
+    color: var(--smoke);
+  }
+</style>
